@@ -56,12 +56,15 @@ if menu == "Pranimi i Faturës (Sot)":
 			else 0
 		)
 
-		st.metric(
-			label="Çmimi i Ri për Copë",
-			value=f"{cmimi_per_cope:.2f} €",
-			delta=f"{diferenca:+.2f} € ({pind:+.1f}%)",
-			delta_inverse=True,
-		)
+		 st.metric
+    label="Çmimi i Ri për Copë",
+    value=f"{cmimi_i_ri:.2f} €",
+    delta=f"{diferenca:.2f} €",
+    delta_color="inverse"
+# përdor delta_color="inverse" në vend të delta_inverse
+
+	
+		
 
 		if diferenca > 0:
 			st.error("⚠️ KUJDES: Çmimi është rritur krahasuar me blerjen e fundit!")
@@ -104,3 +107,4 @@ elif menu == "Krahasimi i Konkurrencës / Ofertat e Reja":
 			st.success(
 				f"U shtua me sukses produkti: {art_ri} ({cmim_cope_ri:.2f} €/copë)"
 			)
+
