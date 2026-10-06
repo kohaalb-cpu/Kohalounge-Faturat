@@ -1,3 +1,4 @@
+import git
 import pandas as pd
 import streamlit as st
 
@@ -56,11 +57,12 @@ if menu == "Pranimi i Faturës (Sot)":
 			else 0
 		)
 
-		 st.metric
+st.metric(
     label="Çmimi i Ri për Copë",
-    value=f"{cmimi_i_ri:.2f} €",
+    value=f"{cmimi_per_cope:.2f} €",
     delta=f"{diferenca:.2f} €",
     delta_color="inverse"
+)
 # përdor delta_color="inverse" në vend të delta_inverse
 
 	
@@ -106,5 +108,3 @@ elif menu == "Krahasimi i Konkurrencës / Ofertat e Reja":
 			)
 			st.success(
 				f"U shtua me sukses produkti: {art_ri} ({cmim_cope_ri:.2f} €/copë)"
-			)
-
