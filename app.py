@@ -48,30 +48,27 @@ if menu == "Pranimi i Faturës (Sot)":
 		step=0.1,
 	)
 
-	if st.button("Llogarit dhe Kontrollo Çmimin"):
+if st.button("Llogarit dhe Kontrollo Çmimin"):
 		cmimi_per_cope = cmimi_fatures_pakete / row["Sasia"]
 		diferenca = cmimi_per_cope - row["Cmimi_Kaluar"]
 		pind = (
 			(diferenca / row["Cmimi_Kaluar"]) * 100
-			if row["Cmimi_Kaluar"] > 0
-			else 0
+		if row["Cmimi_Kaluar"] > 0
+		else 0
 		)
-
 st.metric(
-    label="Çmimi i Ri për Copë",
-    value=f"{cmimi_per_cope:.2f} €",
-    delta=f"{diferenca:.2f} €",
-    delta_color="inverse"
-)
-# përdor delta_color="inverse" në vend të delta_inverse
+            label="Çmimi i Ri për Copë",
+            value=f"{cmimi_per_cope:.2f} €",
+            delta=f"{diferenca:.2f} €",
+            delta_color="inverse"
+        )
 
-	
-		if diferenca > 0:
-		st.error("⚠️ KUJDES: Çmimi është rritur krahasuar me blerjen e fundit!")
-		elif diferenca < 0:
-		st.success("🎉 KURSIM: Çmimi ka rënë krahasuar me herën e kaluar!")
-		else:
-		st.info("ℹ️ Çmimi ka mbetur i pandryshuar.")		
+	if diferenca > 0:
+            st.error("⚠️ KUJDES: Çmimi është rritur krahasuar me blerjen e kaluar.")
+	elif diferenca < 0:
+            st.success("🎉 KURSIM: Çmimi ka rënë krahasuar me herën e kaluar.")
+	else:
+            st.info("ℹ️ Çmimi ka mbetur i pandryshuar.")	
 
 
 
