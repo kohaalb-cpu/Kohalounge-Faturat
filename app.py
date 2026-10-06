@@ -66,14 +66,14 @@ st.metric(
 # përdor delta_color="inverse" në vend të delta_inverse
 
 	
-		
-
 		if diferenca > 0:
-			st.error("⚠️ KUJDES: Çmimi është rritur krahasuar me blerjen e fundit!")
+		st.error("⚠️ KUJDES: Çmimi është rritur krahasuar me blerjen e fundit!")
 		elif diferenca < 0:
-			st.success("🎉 KURSIM: Çmimi ka rënë krahasuar me herën e kaluar!")
+		st.success("🎉 KURSIM: Çmimi ka rënë krahasuar me herën e kaluar!")
 		else:
-			st.info("ℹ️ Çmimi ka mbetur i pandryshuar.")
+		st.info("ℹ️ Çmimi ka mbetur i pandryshuar.")		
+
+
 
 elif menu == "Krahasimi i Konkurrencës / Ofertat e Reja":
 	st.subheader("🔍 Tabela e Çmimeve & Tregut")
