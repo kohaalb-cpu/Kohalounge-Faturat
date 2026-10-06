@@ -1147,10 +1147,10 @@ if menu == "Pranimi i Faturës (Sot)":
     )
 
     st.metric(
-        label="Çmimi i Ri për Njësi/Copë",
-        value=f"{cmimi_per_cope:.3f} €",
-        delta=f"{diferenca:+.3f} € ({pind:+.1f}%)",
-        delta_inverse=True,
+    label="Çmimi i Ri për Njësi/Copë",
+    value=f"{cmimi_per_cope:.2f} €",
+    delta=f"{diferenca:.2f} €",
+    delta_color="inverse"
     )
 
     if diferenca > 0:
