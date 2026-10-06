@@ -57,18 +57,18 @@ if st.button("Llogarit dhe Kontrollo Çmimin"):
 		else 0
 		)
 st.metric(
-            label="Çmimi i Ri për Copë",
-            value=f"{cmimi_per_cope:.2f} €",
-            delta=f"{diferenca:.2f} €",
-            delta_color="inverse"
-        )
+label="Çmimi i Ri për Copë",
+value=f"{cmimi_per_cope:.2f} €",
+delta=f"{diferenca:.2f} €",
+delta_color="inverse"
+)
 
-	if diferenca > 0:
-            st.error("⚠️ KUJDES: Çmimi është rritur krahasuar me blerjen e kaluar.")
-	elif diferenca < 0:
-            st.success("🎉 KURSIM: Çmimi ka rënë krahasuar me herën e kaluar.")
-	else:
-            st.info("ℹ️ Çmimi ka mbetur i pandryshuar.")	
+if diferenca > 0:
+st.error("⚠️ KUJDES: Çmimi është rritur krahasuar me blerjen e kaluar.")
+elif diferenca < 0:
+st.success("🎉 KURSIM: Çmimi ka rënë krahasuar me herën e kaluar.")
+else:
+st.info("ℹ️ Çmimi ka mbetur i pandryshuar.")	
 
 
 
