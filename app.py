@@ -10,7 +10,20 @@ st.write(
     "Menaxho çmimet e furnitorëve dhe kontrollo luhatjet direkt nga telefoni."
 )
 
-# Lista e plotë e 109 produkteve nga inventari yt
+import pandas as pd
+import streamlit as st
+
+st.set_page_config(
+    page_title="Koha Lounge - Kontrolli i Faturave", layout="centered"
+)
+
+st.title("🍹 Koha Lounge - Skanimi & Kontrolli i Faturave")
+st.write(
+    "Menaxho çmimet e furnitorëve, kontrollo luhatjet dhe skano faturat direkt"
+    " nga telefoni."
+)
+
+# Lista e inventarit (109 produkte)
 if "db" not in st.session_state:
   st.session_state.db = pd.DataFrame([
       {
@@ -1107,7 +1120,11 @@ if "db" not in st.session_state:
 
 menu = st.sidebar.selectbox(
     "Zgjidh Opsionin",
-    ["Pranimi i Faturës (Sot)", "Krahasimi i Konkurrencës / Ofertat e Reja"],
+    [
+        "Pranimi i Faturës (Sot)",
+        "📸 Skano Faturën (Kamera)",
+        "Krahasimi i Konkurrencës / Ofertat e Reja",
+    ],
 )
 
 if menu == "Pranimi i Faturës (Sot)":
@@ -1123,7 +1140,7 @@ if menu == "Pranimi i Faturës (Sot)":
   st.info(
       f"**Kategoria:** {row['Kategoria']} | **Furnitori:** {row['Furnitori']}\n\n"
       f"**Paketimi standard:** {row['Njesia']} (Sasia: {row['Sasia']}) |"
-      f" **Çmimi i fundit për paketë/njësi:** {row['Cmimi_Kaluar']} €"
+      f" **Çmimi i fundit:** {row['Cmimi_Kaluar']} €"
   )
 
   cmimi_fatures_pakete = st.number_input(
@@ -1147,10 +1164,10 @@ if menu == "Pranimi i Faturës (Sot)":
     )
 
     st.metric(
-    label="Çmimi i Ri për Njësi/Copë",
-    value=f"{cmimi_per_cope:.2f} €",
-    delta=f"{diferenca:.2f} €",
-    delta_color="inverse"
+        label="Çmimi i Ri për Njësi/Copë",
+        value=f"{cmimi_per_cope:.3f} €",
+        delta=f"{diferenca:+.3f} € ({pind:+.1f}%)",
+        delta_inverse=True,
     )
 
     if diferenca > 0:
@@ -1163,6 +1180,58 @@ if menu == "Pranimi i Faturës (Sot)":
       )
     else:
       st.info("ℹ️ Çmimi ka mbetur i pandryshuar.")
+
+elif menu == "📸 Skano Faturën (Kamera)":
+  st.subheader("📸 Skano Faturën e Furnitorit")
+  st.write(
+      "Bëj një foto të faturës me kamerën e telefonit ose ngarko foton e"
+      " faturës për verifikim të shpejtë."
+  )
+
+  uploaded_file = st.file_uploader(
+      "Zgjidh ose bëj foto të faturës", type=["jpg", "jpeg", "png"]
+  )
+
+  if uploaded_file is not None:
+    st.image(
+        uploaded_file, caption="Fatura e ngarkuar", use_container_width=True
+    )
+    st.success(
+        "Fatura u ngarkua me sukses! Zgjidhni artikullin më poshtë për të"
+        " konfirmuar çmimin e skanuar:"
+    )
+
+    artikulli_skanim = st.selectbox(
+        "Zgjidh artikullin përkatës nga fatura:",
+        st.session_state.db["Artikulli"],
+        key="skan_art",
+    )
+    row_skan = st.session_state.db[
+        st.session_state.db["Artikulli"] == artikulli_skanim
+    ].iloc[0]
+
+    cmim_skanuar = st.number_input(
+        "Fut çmimin e lexuar nga fatura (€):", min_value=0.0, value=10.0
+    )
+
+    if st.button("Verifiko Çmimin e Skanuar"):
+      cm_cope_skan = (
+          cmim_skanuar / row_skan["Sasia"] if row_skan["Sasia"] > 0 else cmim_skanuar
+      )
+      dif_skan = cm_cope_skan - row_skan["Cmimi_Kaluar"]
+      st.metric(
+          label="Çmimi i Skanuar për Njësi",
+          value=f"{cm_cope_skan:.3f} €",
+          delta=f"{dif_skan:+.3f} €",
+          delta_inverse=True,
+      )
+      if dif_skan > 0:
+        st.warning(
+            "⚠️ Furnitori ka rritur çmimin për këtë artikull në faturën e"
+            " sotme!"
+        )
+      else:
+        st.success("✅ Çmimi është në rregull ose më i ulët se hera e kaluar.")
 
 elif menu == "Krahasimi i Konkurrencës / Ofertat e Reja":
   st.subheader("🔍 Tabela e Inventarit & Çmimeve të Tregut")
