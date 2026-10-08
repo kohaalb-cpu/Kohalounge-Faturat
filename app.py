@@ -238,10 +238,10 @@ if menu == "📦 Kontrollo Faturën sipas Furnitorit":
       )
 
         st.metric(
-            label="Çmimi i Ri për Njësi",
-            value=f"{cmimi_per_cope:.2f} €",
-            delta=f"{diferenca:.2f} €",
-            delta_color="inverse")
+        label="Çmimi i Ri për Njësi",
+        value=f"{cmimi_per_cope:.2f} €",
+        delta=f"{diferenca:.2f} €",
+        delta_color="inverse")
 
       if diferenca > 0:
         st.error(
