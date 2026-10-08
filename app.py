@@ -237,12 +237,13 @@ if menu == "📦 Kontrollo Faturën sipas Furnitorit":
           else 0
       )
 
-     st.metric(
-    label="Çmimi i Ri për Njësi",
-    value=f"{cmimi_per_cope:.2f} €",
-    delta=f"{diferenca:.2f} €",
-    delta_color="inverse"
-)
+        st.metric(
+            label="Çmimi i Ri për Njësi",
+            value=f"{cmimi_per_cope:.2f} €",
+            delta=f"{diferenca:.2f} €",
+            delta_color="inverse"
+        )
+        )
       )
 
       if diferenca > 0:
