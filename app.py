@@ -237,11 +237,12 @@ if menu == "📦 Kontrollo Faturën sipas Furnitorit":
           else 0
       )
 
-        st.metric(
-        label="Çmimi i Ri për Njësi",
-        value=f"{cmimi_per_cope:.2f} €",
-        delta=f"{diferenca:.2f} €",
-        delta_color="inverse")
+      st.metric(
+          label="Çmimi i Ri për Njësi",
+          value=f"{cmim_per_njesi:.3f} €",
+          delta=f"{diferenca:+.3f} € ({pind:+.1f}%)",
+          delta_inverse=True,
+      )
 
       if diferenca > 0:
         st.error(
@@ -311,3 +312,4 @@ elif menu == "📸 Skano Faturën (Kamera / Foto)":
 elif menu == "📋 Tabela e Plotë e Inventarit":
   st.subheader("📋 Tabela e Produkteve & Çmimeve")
   st.dataframe(st.session_state.db, use_container_width=True)
+  
