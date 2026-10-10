@@ -2,13 +2,13 @@ import pandas as pd
 import streamlit as st
 
 st.set_page_config(
-    page_title="Koha Lounge - Kontrolli i Faturave", layout="centered"
+    page_title="Koha Lounge - Kontrolli i Faturave", layout="wide"
 )
 
-st.title("🍹 Koha Lounge - Menaxhimi & Skanimi i Faturave")
+st.title("🍹 Koha Lounge - Skanimi i Faturës & Kontrolli i Çmimeve")
 st.write(
-    "Zgjidh furnitorin, bëj foto faturës me kamerë dhe kontrollo çmimet në kohë"
-    " reale."
+    "Fotografo faturën, zgjidh furnitorin dhe kontrollo çmimet e të gjithë"
+    " artikujve njëherësh."
 )
 
 if "db" not in st.session_state:
@@ -114,17 +114,17 @@ if "db" not in st.session_state:
 opsioni = st.sidebar.selectbox(
     "Zgjidh Opsionin",
     [
-        "📦 Kontrollo Faturën sipas Furnitorit",
-        "📸 Skano me Kamerë të Telefonit",
+        "📦 Kontrollo Faturën (Të Gjithë Artikujt)",
+        "📸 Skano Faturën e Furnitorit (Kamera)",
         "📋 Tabela e Inventarit",
     ],
 )
 
-if opsioni == "📦 Kontrollo Faturën sipas Furnitorit":
-  st.subheader("🏢 Zgjidh Furnitorin dhe Produktet")
+if opsioni == "📦 Kontrollo Faturën (Të Gjithë Artikujt)":
+  st.subheader("🏢 Kontrolli i Faturës sipas Furnitorit")
   furnitoret = sorted(st.session_state.db["Furnitori"].unique())
   zgjidh_furnitor = st.selectbox(
-      "Zgjidh furnitorin që ka sjellë mallin:", furnitoret
+      "Zgjidh furnitorin që ka sjellë faturën:", furnitoret
   )
 
   df_f = st.session_state.db[
@@ -132,88 +132,103 @@ if opsioni == "📦 Kontrollo Faturën sipas Furnitorit":
   ]
 
   if not df_f.empty:
-    artikulli_z = st.selectbox("Zgjidh Artikullin:", df_f["Artikulli"])
-    row = df_f[df_f["Artikulli"] == artikulli_z].iloc[0]
-
     st.info(
-        f"**Kategoria:** {row['Kategoria']} | **Njësia:** {row['Njesia']} (Sasia:"
-        f" {row['Sasia']})\n\n**Çmimi i kaluar i referencës:**"
-        f" {row['Cmimi_Kaluar']} €"
+        f"U gjetën **{len(df_f)} artikuj** për furnitorin **{zgjidh_furnitor}**."
+        " Plotëso çmimet e reja totale të faturës për secilin artikull:"
     )
 
-    cmim_fature = st.number_input(
-        "Fut çmimin total të faturës për këtë produkt (€):",
-        min_value=0.0,
-        value=float(row["Cmimi_Kaluar"]),
-        step=0.05,
-    )
+    rezultatet = []
+    # Krijojmë fusha inputi për secilin artikull të këtij furnitori
+    for idx, row in df_f.iterrows():
+      st.markdown(f"---")
+      col1, col2, col3 = st.columns([2, 1, 1])
 
-    if st.button("Llogarit dhe Krahaso Çmimin"):
-      cmim_per_njesi = (
-          cmim_fature / row["Sasia"] if row["Sasia"] > 0 else cmim_fature
-      )
-      diferenca = cmim_per_njesi - row["Cmimi_Kaluar"]
-
-      st.metric(
-          label="Çmimi i Ri për Njësi",
-          value=f"{cmim_per_njesi:.3f} €",
-          delta=f"{diferenca:+.3f} €",
-      )
-
-      if diferenca > 0:
-        st.error(
-            "⚠️ KUJDES: Çmimi është rritur krahasuar me blerjen e fundit!"
+      with col1:
+        st.write(
+            f"**{row['Artikulli']}**\n\n*Kategoria:* {row['Kategoria']} |"
+            f" *Njësia:* {row['Njesia']} (Sasia: {row['Sasia']})"
         )
-      elif diferenca < 0:
-        st.success(
-            "🎉 KURSIM: Çmimi ka rënë krahasuar me herën e kaluar!"
+        st.text(f"Çmimi i kaluar i referencës: {row['Cmimi_Kaluar']} €")
+
+      with col2:
+        cmim_fature = st.number_input(
+            f"Çmimi i faturës (€) - {row['Artikulli']}",
+            min_value=0.0,
+            value=float(row["Cmimi_Kaluar"]),
+            step=0.05,
+            key=f"cf_{idx}",
         )
-      else:
-        st.info("ℹ️ Çmimi ka mbetur i pandryshuar.")
+
+      with col3:
+        cmim_per_njesi = (
+            cmim_fature / row["Sasia"] if row["Sasia"] > 0 else cmim_fature
+        )
+        diferenca = cmim_per_njesi - row["Cmimi_Kaluar"]
+
+        st.metric(
+            label="Për Njësi",
+            value=f"{cmim_per_njesi:.3f} €",
+            delta=f"{diferenca:+.3f} €",
+        )
+
+        if diferenca > 0:
+          st.error("⚠️ Rritur")
+        elif diferenca < 0:
+          st.success("🎉 Ulur")
+        else:
+          st.info("ℹ️ Njëjtë")
+
   else:
     st.warning("Nuk u gjetën produkte për këtë furnitor.")
 
-elif opsioni == "📸 Skano me Kamerë të Telefonit":
-  st.subheader("📸 Skano Faturën direkt me Kamerë")
-  st.write(
-      "Kliko butonin më poshtë për të hapur kamerën e telefonit dhe për të"
-      " fotografuar faturën:"
-  )
-
-  # Kjo hap direkt kamerën e pajisjes celulare
-  foto_kamera = st.camera_input("Bëj foto të faturës")
+elif opsioni == "📸 Skano Faturën e Furnitorit (Kamera)":
+  st.subheader("📸 Skano Faturën me Kamerë dhe Llogarit Të Gjithë Artikujt")
+  foto_kamera = st.camera_input("Bëj foto të faturës së furnitorit")
 
   if foto_kamera is not None:
-    st.success("Fotografia u mor me sukses!")
-
-    f_skan = st.selectbox(
+    st.success("Fatura u fotografua me sukses!")
+    furn_skan = st.selectbox(
         "Zgjidh Furnitorin e kësaj fature:",
         sorted(st.session_state.db["Furnitori"].unique()),
-        key="fs",
-    )
-    df_s = st.session_state.db[st.session_state.db["Furnitori"] == f_skan]
-    a_skan = st.selectbox("Zgjidh Artikullin:", df_s["Artikulli"], key="as")
-    r_s = df_s[df_s["Artikulli"] == a_skan].iloc[0]
-
-    c_fakt = st.number_input(
-        "Fut çmimin total në faturë (€):",
-        min_value=0.0,
-        value=float(r_s["Cmimi_Kaluar"]),
-        step=0.05,
+        key="fs_all",
     )
 
-    if st.button("Verifiko Çmimin e Skanuar"):
-      c_nje = c_fakt / r_s["Sasia"] if r_s["Sasia"] > 0 else c_fakt
-      dif = c_nje - r_s["Cmimi_Kaluar"]
-      st.metric(
-          label="Çmimi i Skanuar për Njësi",
-          value=f"{c_nje:.3f} €",
-          delta=f"{dif:+.3f} €",
-      )
-      if dif > 0:
-        st.warning("⚠️ Çmimi në faturën e skanuar është RITUR!")
-      else:
-        st.success("✅ Çmimi është në rregull ose më i lirë.")
+    df_s = st.session_state.db[st.session_state.db["Furnitori"] == furn_skan]
+
+    st.markdown(
+        f"### Llogaritja e faturës për: {furn_skan} (Të gjithë artikujt)"
+    )
+
+    for idx, row in df_s.iterrows():
+      st.markdown(f"---")
+      c1, c2, c3 = st.columns([2, 1, 1])
+      with c1:
+        st.write(
+            f"**{row['Artikulli']}**\n\n*Sasia:* {row['Sasia']} {row['Njesia']}"
+            f" | *Referenca:* {row['Cmimi_Kaluar']} €"
+        )
+      with c2:
+        val_fakt = st.number_input(
+            f"Totali (€) - {row['Artikulli']}",
+            min_value=0.0,
+            value=float(row["Cmimi_Kaluar"]),
+            step=0.05,
+            key=f"scf_{idx}",
+        )
+      with c3:
+        nje_s = val_fakt / row["Sasia"] if row["Sasia"] > 0 else val_fakt
+        dif_s = nje_s - row["Cmimi_Kaluar"]
+        st.metric(
+            label="Çmimi/Njësi",
+            value=f"{nje_s:.3f} €",
+            delta=f"{dif_s:+.3f} €",
+        )
+        if dif_s > 0:
+          st.error("⚠️ Rritur")
+        elif dif_s < 0:
+          st.success("🎉 Ulur")
+        else:
+          st.info("ℹ️ Njëjtë")
 
 elif opsioni == "📋 Tabela e Inventarit":
   st.subheader("📋 Tabela e Produkteve & Çmimeve")
