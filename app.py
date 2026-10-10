@@ -5,38 +5,12 @@ st.set_page_config(
     page_title="Koha Lounge - Kontrolli i Faturave", layout="centered"
 )
 
-st.title("🍹 Koha Lounge - Kontrolli i Faturave & Çmimeve")
-st.write(
-    "Menaxho çmimet e furnitorëve dhe kontrollo luhatjet direkt nga telefoni."
-)
-
-import pandas as pd
-import streamlit as st
-
-st.set_page_config(
-    page_title="Koha Lounge - Kontrolli i Faturave", layout="centered"
-)
-
-st.title("🍹 Koha Lounge - Skanimi & Kontrolli i Faturave")
-st.write(
-    "Menaxho çmimet e furnitorëve, kontrollo luhatjet dhe skano faturat direkt"
-    " nga telefoni."
-)
-
-import pandas as pd
-import streamlit as st
-
-st.set_page_config(
-    page_title="Koha Lounge - Kontrolli i Faturave", layout="centered"
-)
-
-st.title("🍹 Koha Lounge - Skanimi & Menaxhimi i Furnitorëve")
+st.title("🍹 Koha Lounge - Menaxhimi & Skanimi i Faturave")
 st.write(
     "Zgjidh furnitorin, skano faturën me kamerë dhe kontrollo çmimet në kohë"
     " reale."
 )
 
-# Baza e të dhënave me 54 artikujt e verifikuar dhe furnitorët e tyre
 if "db" not in st.session_state:
   st.session_state.db = pd.DataFrame([
       {
@@ -58,7 +32,7 @@ if "db" not in st.session_state:
       {
           "Furnitori": "Viva Fresh Store",
           "Artikulli": "Pule e ngrire Dippy 900gr",
-          "Kategoria": "Mish/Ushqim i ngrirë",
+          "Kategoria": "Mish/Ushqim",
           "Njesia": "Kg",
           "Sasia": 50.0,
           "Cmimi_Kaluar": 2.24,
@@ -104,14 +78,6 @@ if "db" not in st.session_state:
           "Cmimi_Kaluar": 0.59,
       },
       {
-          "Furnitori": "Dauti - Komerc",
-          "Artikulli": "Vaj lule dielli",
-          "Kategoria": "Ushqimore",
-          "Njesia": "Litër",
-          "Sasia": 1.0,
-          "Cmimi_Kaluar": 1.52,
-      },
-      {
           "Furnitori": "N.T.P. 1Maji-X",
           "Artikulli": "Qumësht",
           "Kategoria": "Banak",
@@ -128,28 +94,12 @@ if "db" not in st.session_state:
           "Cmimi_Kaluar": 12.50,
       },
       {
-          "Furnitori": "N.T.P. 1Maji-X",
-          "Artikulli": "Fanta Orange 0.25L",
-          "Kategoria": "Banak",
-          "Njesia": "Komplet",
-          "Sasia": 24.0,
-          "Cmimi_Kaluar": 12.50,
-      },
-      {
           "Furnitori": "Dinamika Sh.p.k.",
           "Artikulli": "Suxhuk",
           "Kategoria": "Kuzhinë",
           "Njesia": "Kg",
           "Sasia": 1.0,
           "Cmimi_Kaluar": 7.80,
-      },
-      {
-          "Furnitori": "Dinamika Sh.p.k.",
-          "Artikulli": "Përshutë",
-          "Kategoria": "Kuzhinë",
-          "Njesia": "Kg",
-          "Sasia": 1.0,
-          "Cmimi_Kaluar": 10.00,
       },
       {
           "Furnitori": "Salespoint G&S",
@@ -159,52 +109,24 @@ if "db" not in st.session_state:
           "Sasia": 10.0,
           "Cmimi_Kaluar": 0.92,
       },
-      {
-          "Furnitori": "Salespoint G&S",
-          "Artikulli": "Rollne WC",
-          "Kategoria": "Sanitative",
-          "Njesia": "Copë",
-          "Sasia": 20.0,
-          "Cmimi_Kaluar": 1.06,
-      },
-      {
-          "Furnitori": "LB Group",
-          "Artikulli": "Set thikë luge pirunë",
-          "Kategoria": "Aksesorë",
-          "Njesia": "Copë",
-          "Sasia": 1.0,
-          "Cmimi_Kaluar": 0.095,
-      },
-      {
-          "Furnitori": "Dioren Sh.p.k.",
-          "Artikulli": "Produkt i Dioren",
-          "Kategoria": "Ushqimore",
-          "Njesia": "Copë",
-          "Sasia": 1.0,
-          "Cmimi_Kaluar": 2.60,
-      },
   ])
 
-# Menyja anësore e aplikacionit
-menu = st.sidebar.selectbox(
+opsioni = st.sidebar.selectbox(
     "Zgjidh Opsionin",
     [
         "📦 Kontrollo Faturën sipas Furnitorit",
-        "📸 Skano Faturën (Kamera / Foto)",
-        "📋 Tabela e Plotë e Inventarit",
+        "📸 Skano Faturën (Kamera)",
+        "📋 Tabela e Inventarit",
     ],
 )
 
-if menu == "📦 Kontrollo Faturën sipas Furnitorit":
+if opsioni == "📦 Kontrollo Faturën sipas Furnitorit":
   st.subheader("🏢 Zgjidh Furnitorin dhe Produktet")
-
-  # Marrja e listës së furnitorëve
   furnitoret = sorted(st.session_state.db["Furnitori"].unique())
   zgjidh_furnitor = st.selectbox(
-      "Zgjidh Furnitorin që ka sjellë mallin:", furnitoret
+      "Zgjidh furnitorin që ka sjellë mallin:", furnitoret
   )
 
-  # Filtrimi i produkteve për këtë furnitor
   df_f = st.session_state.db[
       st.session_state.db["Furnitori"] == zgjidh_furnitor
   ]
@@ -220,7 +142,7 @@ if menu == "📦 Kontrollo Faturën sipas Furnitorit":
     )
 
     cmim_fature = st.number_input(
-        "Fut çmimin total të faturës për këtë paketë/artikull (€):",
+        "Fut çmimin total të faturës për këtë produkt (€):",
         min_value=0.0,
         value=float(row["Cmimi_Kaluar"]),
         step=0.05,
@@ -231,17 +153,11 @@ if menu == "📦 Kontrollo Faturën sipas Furnitorit":
           cmim_fature / row["Sasia"] if row["Sasia"] > 0 else cmim_fature
       )
       diferenca = cmim_per_njesi - row["Cmimi_Kaluar"]
-      pind = (
-          (diferenca / row["Cmimi_Kaluar"]) * 100
-          if row["Cmimi_Kaluar"] > 0
-          else 0
-      )
 
       st.metric(
           label="Çmimi i Ri për Njësi",
           value=f"{cmim_per_njesi:.3f} €",
-          delta=f"{diferenca:+.3f} € ({pind:+.1f}%)",
-          delta_inverse=True,
+          delta=f"{diferenca:+.3f} €",
       )
 
       if diferenca > 0:
@@ -257,59 +173,48 @@ if menu == "📦 Kontrollo Faturën sipas Furnitorit":
   else:
     st.warning("Nuk u gjetën produkte për këtë furnitor.")
 
-elif menu == "📸 Skano Faturën (Kamera / Foto)":
+elif opsioni == "📸 Skano Faturën (Kamera)":
   st.subheader("📸 Skano ose Ngarko Faturën e Furnitorit")
-  st.write(
-      "Bëj foto të faturës me kamerën e telefonit direkt nga shfletuesi ose"
-      " ngarko një foto ekzistuese për verifikim."
+  foto = st.file_uploader(
+      "Fotografo ose ngarko faturën e furnitorit", type=["jpg", "jpeg", "png"]
   )
 
-  uploaded_file = st.file_uploader(
-      "Fotografo ose ngarko faturën", type=["jpg", "jpeg", "png"]
-  )
-
-  if uploaded_file is not None:
-    st.image(
-        uploaded_file, caption="Fatura e skanuar / ngarkuar", use_container_width=True
-    )
+  if foto is not None:
+    st.image(foto, caption="Fatura e skanuar", use_container_width=True)
     st.success(
-        "Fatura u mor me sukses! Tani zgjidh furnitorin dhe artikullin për të"
-        " konfirmuar çmimin:"
+        "Fatura u ngarkua me sukses! Tani zgjidh furnitorin dhe artikullin:"
     )
 
-    furn_skan = st.selectbox(
-        "Zgjidh Furnitorin e Faturës:",
+    f_skan = st.selectbox(
+        "Zgjidh Furnitorin:",
         sorted(st.session_state.db["Furnitori"].unique()),
         key="fs",
     )
-    df_s = st.session_state.db[st.session_state.db["Furnitori"] == furn_skan]
-    art_skan = st.selectbox("Zgjidh Artikullin:", df_s["Artikulli"], key="as")
-    row_s = df_s[df_s["Artikulli"] == art_skan].iloc[0]
+    df_s = st.session_state.db[st.session_state.db["Furnitori"] == f_skan]
+    a_skan = st.selectbox("Zgjidh Artikullin:", df_s["Artikulli"], key="as")
+    r_s = df_s[df_s["Artikulli"] == a_skan].iloc[0]
 
-    cmim_skanuar = st.number_input(
-        "Fut çmimin e lexuar nga fatura (€):",
+    c_fakt = st.number_input(
+        "Fut çmimin total në faturë (€):",
         min_value=0.0,
-        value=float(row_s["Cmimi_Kaluar"]),
+        value=float(r_s["Cmimi_Kaluar"]),
         step=0.05,
     )
 
-    if st.button("Verifiko Faturën e Skanuar"):
-      c_njesi = (
-          cmim_skanuar / row_s["Sasia"] if row_s["Sasia"] > 0 else cmim_skanuar
-      )
-      dif = c_njesi - row_s["Cmimi_Kaluar"]
+    if st.button("Verifiko Çmimin e Skanuar"):
+      c_nje = c_fakt / r_s["Sasia"] if r_s["Sasia"] > 0 else c_fakt
+      dif = c_nje - r_s["Cmimi_Kaluar"]
       st.metric(
           label="Çmimi i Skanuar për Njësi",
-          value=f"{c_njesi:.3f} €",
+          value=f"{c_nje:.3f} €",
           delta=f"{dif:+.3f} €",
-          delta_inverse=True,
       )
       if dif > 0:
         st.warning("⚠️ Çmimi në faturën e skanuar është RITUR!")
       else:
         st.success("✅ Çmimi është në rregull ose më i lirë.")
 
-elif menu == "📋 Tabela e Plotë e Inventarit":
+elif opsioni == "📋 Tabela e Inventarit":
   st.subheader("📋 Tabela e Produkteve & Çmimeve")
   st.dataframe(st.session_state.db, use_container_width=True)
   
