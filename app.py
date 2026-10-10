@@ -13,6 +13,56 @@ st.write(
 
 if "db" not in st.session_state:
   st.session_state.db = pd.DataFrame([
+      # Artikujt e rinj nga Gazi-com / Malea Group
+      {
+          "Furnitori": "Gazi-com (Malea Group)",
+          "Artikulli": "Pleskavica",
+          "Kategoria": "Mish",
+          "Njesia": "KG",
+          "Sasia": 5.0,
+          "Cmimi_Kaluar": 6.00,
+      },
+      {
+          "Furnitori": "Gazi-com (Malea Group)",
+          "Artikulli": "Medalion",
+          "Kategoria": "Mish",
+          "Njesia": "KG",
+          "Sasia": 5.366,
+          "Cmimi_Kaluar": 12.00,
+      },
+      {
+          "Furnitori": "Gazi-com (Malea Group)",
+          "Artikulli": "Pleskavicë Bio",
+          "Kategoria": "Mish",
+          "Njesia": "KG",
+          "Sasia": 12.732,
+          "Cmimi_Kaluar": 8.00,
+      },
+      {
+          "Furnitori": "Gazi-com (Malea Group)",
+          "Artikulli": "Mish Tul (P)",
+          "Kategoria": "Mish",
+          "Njesia": "KG",
+          "Sasia": 40.13,
+          "Cmimi_Kaluar": 11.00,
+      },
+      {
+          "Furnitori": "Gazi-com (Malea Group)",
+          "Artikulli": "Ramstek",
+          "Kategoria": "Mish",
+          "Njesia": "KG",
+          "Sasia": 4.228,
+          "Cmimi_Kaluar": 13.00,
+      },
+      {
+          "Furnitori": "Gazi-com (Malea Group)",
+          "Artikulli": "Mish i Bluar",
+          "Kategoria": "Mish",
+          "Njesia": "KG",
+          "Sasia": 10.09,
+          "Cmimi_Kaluar": 10.00,
+      },
+      # Furnitorët e tjerë kryesorë
       {
           "Furnitori": "Viva Fresh Store",
           "Artikulli": "Supe gjeli Podravka 62gr",
@@ -20,22 +70,6 @@ if "db" not in st.session_state:
           "Njesia": "Copë",
           "Sasia": 35.0,
           "Cmimi_Kaluar": 0.42,
-      },
-      {
-          "Furnitori": "Viva Fresh Store",
-          "Artikulli": "Detergjent per ene Det Lemon 900 ml",
-          "Kategoria": "Sanitative",
-          "Njesia": "Litër",
-          "Sasia": 36.0,
-          "Cmimi_Kaluar": 0.89,
-      },
-      {
-          "Furnitori": "Viva Fresh Store",
-          "Artikulli": "Pule e ngrire Dippy 900gr",
-          "Kategoria": "Mish/Ushqim",
-          "Njesia": "Kg",
-          "Sasia": 50.0,
-          "Cmimi_Kaluar": 2.24,
       },
       {
           "Furnitori": "Kosmonte Foods",
@@ -46,22 +80,6 @@ if "db" not in st.session_state:
           "Cmimi_Kaluar": 4.90,
       },
       {
-          "Furnitori": "Kosmonte Foods",
-          "Artikulli": "Cheese Burger",
-          "Kategoria": "Ushqimore",
-          "Njesia": "Komplet",
-          "Sasia": 10.0,
-          "Cmimi_Kaluar": 1.10,
-      },
-      {
-          "Furnitori": "Kosmonte Foods",
-          "Artikulli": "Ajvar",
-          "Kategoria": "Ushqimore",
-          "Njesia": "Kg",
-          "Sasia": 1.0,
-          "Cmimi_Kaluar": 2.90,
-      },
-      {
           "Furnitori": "Dauti - Komerc",
           "Artikulli": "Krip",
           "Kategoria": "Ushqimore",
@@ -70,44 +88,12 @@ if "db" not in st.session_state:
           "Cmimi_Kaluar": 0.456,
       },
       {
-          "Furnitori": "Dauti - Komerc",
-          "Artikulli": "Uthull e bardhë",
-          "Kategoria": "Ushqimore",
-          "Njesia": "Litër",
-          "Sasia": 1.0,
-          "Cmimi_Kaluar": 0.59,
-      },
-      {
-          "Furnitori": "N.T.P. 1Maji-X",
-          "Artikulli": "Qumësht",
-          "Kategoria": "Banak",
-          "Njesia": "Komplet",
-          "Sasia": 12.0,
-          "Cmimi_Kaluar": 8.00,
-      },
-      {
           "Furnitori": "N.T.P. 1Maji-X",
           "Artikulli": "Coca Cola 0.25l",
           "Kategoria": "Banak",
           "Njesia": "Komplet",
           "Sasia": 24.0,
           "Cmimi_Kaluar": 12.50,
-      },
-      {
-          "Furnitori": "Dinamika Sh.p.k.",
-          "Artikulli": "Suxhuk",
-          "Kategoria": "Kuzhinë",
-          "Njesia": "Kg",
-          "Sasia": 1.0,
-          "Cmimi_Kaluar": 7.80,
-      },
-      {
-          "Furnitori": "Salespoint G&S",
-          "Artikulli": "Palloma katrore",
-          "Kategoria": "Sanitative",
-          "Njesia": "Copë",
-          "Sasia": 10.0,
-          "Cmimi_Kaluar": 0.92,
       },
   ])
 
@@ -137,8 +123,6 @@ if opsioni == "📦 Kontrollo Faturën (Të Gjithë Artikujt)":
         " Plotëso çmimet e reja totale të faturës për secilin artikull:"
     )
 
-    rezultatet = []
-    # Krijojmë fusha inputi për secilin artikull të këtij furnitori
     for idx, row in df_f.iterrows():
       st.markdown(f"---")
       col1, col2, col3 = st.columns([2, 1, 1])
@@ -154,7 +138,7 @@ if opsioni == "📦 Kontrollo Faturën (Të Gjithë Artikujt)":
         cmim_fature = st.number_input(
             f"Çmimi i faturës (€) - {row['Artikulli']}",
             min_value=0.0,
-            value=float(row["Cmimi_Kaluar"]),
+            value=float(row["Cmimi_Kaluar"] * row["Sasia"]),
             step=0.05,
             key=f"cf_{idx}",
         )
@@ -211,7 +195,7 @@ elif opsioni == "📸 Skano Faturën e Furnitorit (Kamera)":
         val_fakt = st.number_input(
             f"Totali (€) - {row['Artikulli']}",
             min_value=0.0,
-            value=float(row["Cmimi_Kaluar"]),
+            value=float(row["Cmimi_Kaluar"] * row["Sasia"]),
             step=0.05,
             key=f"scf_{idx}",
         )
