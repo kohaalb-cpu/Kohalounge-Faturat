@@ -7,7 +7,7 @@ st.set_page_config(
 
 st.title("🍹 Koha Lounge - Menaxhimi & Skanimi i Faturave")
 st.write(
-    "Zgjidh furnitorin, skano faturën me kamerë dhe kontrollo çmimet në kohë"
+    "Zgjidh furnitorin, bëj foto faturës me kamerë dhe kontrollo çmimet në kohë"
     " reale."
 )
 
@@ -115,7 +115,7 @@ opsioni = st.sidebar.selectbox(
     "Zgjidh Opsionin",
     [
         "📦 Kontrollo Faturën sipas Furnitorit",
-        "📸 Skano Faturën (Kamera)",
+        "📸 Skano me Kamerë të Telefonit",
         "📋 Tabela e Inventarit",
     ],
 )
@@ -173,20 +173,21 @@ if opsioni == "📦 Kontrollo Faturën sipas Furnitorit":
   else:
     st.warning("Nuk u gjetën produkte për këtë furnitor.")
 
-elif opsioni == "📸 Skano Faturën (Kamera)":
-  st.subheader("📸 Skano ose Ngarko Faturën e Furnitorit")
-  foto = st.file_uploader(
-      "Fotografo ose ngarko faturën e furnitorit", type=["jpg", "jpeg", "png"]
+elif opsioni == "📸 Skano me Kamerë të Telefonit":
+  st.subheader("📸 Skano Faturën direkt me Kamerë")
+  st.write(
+      "Kliko butonin më poshtë për të hapur kamerën e telefonit dhe për të"
+      " fotografuar faturën:"
   )
 
-  if foto is not None:
-    st.image(foto, caption="Fatura e skanuar", use_container_width=True)
-    st.success(
-        "Fatura u ngarkua me sukses! Tani zgjidh furnitorin dhe artikullin:"
-    )
+  # Kjo hap direkt kamerën e pajisjes celulare
+  foto_kamera = st.camera_input("Bëj foto të faturës")
+
+  if foto_kamera is not None:
+    st.success("Fotografia u mor me sukses!")
 
     f_skan = st.selectbox(
-        "Zgjidh Furnitorin:",
+        "Zgjidh Furnitorin e kësaj fature:",
         sorted(st.session_state.db["Furnitori"].unique()),
         key="fs",
     )
@@ -217,4 +218,3 @@ elif opsioni == "📸 Skano Faturën (Kamera)":
 elif opsioni == "📋 Tabela e Inventarit":
   st.subheader("📋 Tabela e Produkteve & Çmimeve")
   st.dataframe(st.session_state.db, use_container_width=True)
-  
